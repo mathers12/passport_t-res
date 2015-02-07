@@ -9,7 +9,7 @@ var crypto = require('crypto');
 
 router.use(passport.initialize());
 router.use(passport.session());
-router.use(flash());
+
 /* ---------------------NODEMAILER--------------------------*/
 var smtpTransport = nodemailer.createTransport("SMTP",{
     service: "Gmail",  // sets automatically host, port and connection security settings
