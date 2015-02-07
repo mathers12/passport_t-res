@@ -6,7 +6,6 @@ var passportLocal = require('passport-local');
 var passportHttp = require("passport-http");
 var nodemailer = require('nodemailer');
 var crypto = require('crypto');
-var flash = require('connect-flash');
 
 router.use(passport.initialize());
 router.use(passport.session());
