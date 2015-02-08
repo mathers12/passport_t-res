@@ -197,8 +197,8 @@ router.post('/registration',function(req, res) // Spracovanie registracie
               data.save(function (err) {
                   if (!err) {
                       console.log("Saved");
-                      res.write("<script>alert('Registraciu dokoncite potvrdenim verifikacneho e-mailu!');window.location='/';</script>");
-
+                     // res.write("<script>alert('Registraciu dokoncite potvrdenim verifikacneho e-mailu!');window.location='/';</script>");
+                    res.redirect("/");
 
                   }
                   else console.log("Error");
