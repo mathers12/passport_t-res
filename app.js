@@ -8,8 +8,6 @@ var expressSession = require('express-session');
 var routes = require('./routes/index');
 var mongoose = require('mongoose');
 var passport = require('passport');
-var passportLocal = require('passport-local');
-var passportHttp = require('passport-http');
 var app = express();
 var partials = require('express-partials');
 

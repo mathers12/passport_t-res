@@ -164,10 +164,10 @@ router.get('/verify',function(req,res)
 });
 
 /* ---------------------POST-REGISTRATION--------------------------*/
-router.post('/registration',function(req,res) // Spracovanie registracie
+router.post('/registration',function(req, res) // Spracovanie registracie
 {
 
-    mongoose.model('uzivatelia').find({email: req.body['email']},function(err,users)
+    mongoose.model('uzivatelia').find({email: req.body['email']},function(err, users)
    {
 
       if (users.length)//Ak uz je v DB
@@ -182,7 +182,7 @@ router.post('/registration',function(req,res) // Spracovanie registracie
           {
 
               var rand = getUniqueRandomId();
-              console.log("Vysledne generovane cislo"+ rand);
+              console.log("Vysledne generovane cislo: "+ rand);
               var link="http://"+req.get('host')+"/verify?id="+rand;
 
               sendEmail(req.body['email'],link,req.body['meno'],req.body['priezvisko']); // Volanie funkcie na posielanie ver. emailu
