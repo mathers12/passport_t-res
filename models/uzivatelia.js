@@ -6,9 +6,8 @@ var userSchema = new Schema({
     priezvisko: String,
     email: String,
     heslo: String,
-    verifiedEmail: Boolean,
-    emailId: String
+    verifiedEmail: Boolean
 }, {});
 
 
-module.exports = mongoose.model('uzivatelia', userSchema);
+module.exports = mongoose.model('users', userSchema);

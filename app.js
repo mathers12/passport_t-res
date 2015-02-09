@@ -10,6 +10,7 @@ var mongoose = require('mongoose');
 var passport = require('passport');
 var app = express();
 var partials = require('express-partials');
+var fs = require('fs');
 
 //NODEMAILER
 
@@ -35,6 +36,13 @@ app.use(expressSession({
     resave: false,
     saveUninitialized: false
 }));
+
+
+// load all mongoose models from models folder
+fs.readdirSync(__dirname + '/models').forEach(function (filename) {
+    if (~filename.indexOf('.js')) require(__dirname + '/models/' + filename);
+});
+
 app.use('/', routes);
 
 
