@@ -12,10 +12,10 @@ router.use(passport.session());
 
 /* ---------------------NODEMAILER--------------------------*/
 var smtpTransport = nodemailer.createTransport("SMTP",{
-    //service: "Gmail",  // sets automatically host, port and connection security settings
-    host: "smtp.gmail.com", // hostname
-    secureConnection: true, // use SSL
-    port: 465, // port for secure SMTP
+    service: "Gmail",  // sets automatically host, port and connection security settings
+    //host: "smtp.gmail.com", // hostname
+    //secureConnection: true, // use SSL
+    //port: 587, // port for secure SMTP
     auth: {
         user: "dsoft.tesla@gmail.com",
         pass: "something001"
@@ -135,19 +135,14 @@ router.get('/registration',function(req,res) // Registracia
 router.get('/verify',function(req,res)
 {
 
-    mongoose.model('uzivatelia').find({emailId: req.query.id},function(err,users)
+    //mongoose.model('uzivatelia').find({emailId: req.query.id},function(err,users)
+    mongoose.model('uzivatelia').findById(req.query.id, function(err, user)
     {
-        if (users.length)
+        if (user.length)
         {
-            Users.findOne({ emailId: req.query.id }, function (err, doc) { // Hladame podla ID v DB uzivatela
-
-                doc.verifiedEmail = true;
-                doc.save();
-                res.write("<script>alert('Verifikacia prebehla uspesne,mozete sa prihlasit!');window.location='/'</script>");
-
-
-            })
-
+            user.verifiedEmail = true;
+            user.save();
+            res.write("<script>alert('Verifikacia prebehla uspesne,mozete sa prihlasit!');window.location='/'</script>");
         }
         else res.send(404);
     });
@@ -158,7 +153,7 @@ router.get('/verify',function(req,res)
 router.post('/registration',function(req, res) // Spracovanie registracie
 {
 
-    mongoose.model('uzivatelia').find({email: req.body['email']},function(err, users)
+    mongoose.model('uzivatelia').find({email: req.body['email']}, function(err, users)
    {
 
       if (users.length)//Ak uz je v DB
@@ -172,21 +167,23 @@ router.post('/registration',function(req, res) // Spracovanie registracie
           if (req.body['heslo'] === req.body['heslo2']) // Skontrolujem zhodu hesiel a ukladam do DB
           {
 
-              var rand = getUniqueRandomId();
-              console.log("Vysledne generovane cislo: "+ rand);
-              var link="http://"+req.get('host')+"/verify?id="+rand;
+              //var rand = getUniqueRandomId();
+              //console.log("Vysledne generovane cislo: "+ rand);
+              //var link="http://"+req.get('host')+"/verify?id="+rand;
 
-              sendEmail(req.body['email'],link,req.body['meno'],req.body['priezvisko']); // Volanie funkcie na posielanie ver. emailu
-
-              var data = new Users();
-              data.meno = req.body['meno'];
-              data.priezvisko = req.body['priezvisko'];
-              data.email = req.body['email'];
-              data.heslo = req.body['heslo'];
-              data.emailId = rand;
-              data.verifiedEmail = false;
-              data.save(function (err) {
+              //sendEmail(req.body['email'],link,req.body['meno'],req.body['priezvisko']); // Volanie funkcie na posielanie ver. emailu
+              var AddUserSchema = mongoose.model('uzivatelia');
+              var addUser = new AddUserSchema({
+                    meno: req.body['meno'],
+                    priezvisko: req.body['priezvisko'],
+                    email: req.body['email'],
+                    heslo: req.body['heslo'],
+                    verifiedEmail: false
+                });
+              addUser.save(function (err, data) {
                   if (!err) {
+                      var link = "http://" + req.get('host') + "/verify?id=" + data._id;
+                      sendEmail(req.body['email'],link,req.body['meno'],req.body['priezvisko']); // Volanie funkcie na posielanie ver. emailu
                       console.log("Saved");
                      // res.write("<script>alert('Registraciu dokoncite potvrdenim verifikacneho e-mailu!');window.location='/';</script>");
 

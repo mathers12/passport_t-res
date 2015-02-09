@@ -6,8 +6,7 @@ var userSchema = new Schema({
     priezvisko: String,
     email: String,
     heslo: String,
-    verifiedEmail: Boolean,
-    emailId: String
+    verifiedEmail: Boolean
 }, {});
 
 
