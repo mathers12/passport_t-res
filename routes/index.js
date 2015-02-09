@@ -198,7 +198,8 @@ router.post('/registration',function(req, res) // Spracovanie registracie
                   if (!err) {
                       console.log("Saved");
                      // res.write("<script>alert('Registraciu dokoncite potvrdenim verifikacneho e-mailu!');window.location='/';</script>");
-                    res.redirect("/");
+                    res.end("DDSDS");
+                      res.redirect("/");
 
                   }
                   else console.log("Error");
