@@ -14,7 +14,7 @@ router.use(passport.session());
 var smtpTransport = nodemailer.createTransport("SMTP", {
     host: "smtp.gmail.com", // hostname
     secureConnection: true, // use SSL
-    port: 465, // port for secure SMTP
+    port: 587, // port for secure SMTP
     auth: {
         user: "dsoft.tesla@gmail.com",
         pass: "something001"
