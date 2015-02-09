@@ -15,7 +15,7 @@ var smtpTransport = nodemailer.createTransport("SMTP",{
     //service: "Gmail",  // sets automatically host, port and connection security settings
     host: "smtp.gmail.com", // hostname
     secureConnection: true, // use SSL
-    port: 465, // port for secure SMTP
+    port: 587, // port for secure SMTP
     auth: {
         user: "dsoft.tesla@gmail.com",
         pass: "something001"
