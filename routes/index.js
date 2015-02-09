@@ -18,7 +18,7 @@ var smtpTransport = nodemailer.createTransport("SMTP",{
     //port: 587, // port for secure SMTP
     auth: {
         user: "info@publishart.eu",
-        pass: "2714info2517"
+        pass: "publishart@2714info2517"
     }
 });
 
@@ -28,7 +28,7 @@ function sendEmail (email,link,meno,priezvisko)
 {
 
     smtpTransport.sendMail({  //email options
-        from: "dSoft Solutions s.r.o <info@publishart.eu>",
+        from: "info@publishart.eu",
         to: email,
         subject: "Prosím, potvrďte tento e-mail!",
         html: "Dobrý deň pán <b>"+meno+" "+priezvisko+"</b><br><br>Prosím potvrďte tento verifikačný e-mail!<br><a href="+link+">Potvrdiť kliknutím tu!</a>"
