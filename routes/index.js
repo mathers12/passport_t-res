@@ -11,7 +11,7 @@ router.use(passport.initialize());
 router.use(passport.session());
 
 /* ---------------------NODEMAILER--------------------------*/
-var smtpTransport = nodemailer.createTransport({
+var smtpTransport = nodemailer.createTransport("SMTP",{
     service: "Gmail",  // sets automatically host, port and connection security settings
     auth: {
         user: "dsoft.tesla@gmail.com",
