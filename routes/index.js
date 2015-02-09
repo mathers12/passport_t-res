@@ -24,21 +24,7 @@ var smtpTransport = nodemailer.createTransport("SMTP",{
 function sendEmail (email,link,meno,priezvisko)
 {
 
-    smtpTransport.sendMail({  //email options
-        from: "dSoft Solutions s.r.o<dsoft.tesla@gmail.com>",
-        to: email,
-        subject: "Prosím, potvrďte tento e-mail!",
-        html: "Dobrý deň pán <b>"+meno+" "+priezvisko+"</b><br><br>Prosím potvrďte tento verifikačný e-mail!<br><a href="+link+">Potvrdiť kliknutím tu!</a>"
 
-    }, function(error, response){  //callback
-        if(error){
-            console.log(error);
-        }else{
-            console.log("Message sent: " + response.message);
-        }
-
-        smtpTransport.close(); // shut down the connection pool, no more messages.  Comment this line out to continue sending emails.
-    });
 
 
 }
@@ -185,8 +171,23 @@ router.post('/registration',function(req, res) // Spracovanie registracie
               console.log("Vysledne generovane cislo: "+ rand);
               var link="http://"+req.get('host')+"/verify?id="+rand;
 
-              sendEmail(req.body['email'],link,req.body['meno'],req.body['priezvisko']); // Volanie funkcie na posielanie ver. emailu
+              //sendEmail(req.body['email'],link,req.body['meno'],req.body['priezvisko']); // Volanie funkcie na posielanie ver. emailu
 
+              smtpTransport.sendMail({  //email options
+                  from: "dSoft Solutions s.r.o<dsoft.tesla@gmail.com>",
+                  to: req.body['email'],
+                  subject: "Prosím, potvrďte tento e-mail!",
+                  html: "Dobrý deň pán <b>"+req.body['meno']+" "+req.body['priezvisko']+"</b><br><br>Prosím potvrďte tento verifikačný e-mail!<br><a href="+link+">Potvrdiť kliknutím tu!</a>"
+
+              }, function(error, response){  //callback
+                  if(error){
+                      console.log(error);
+                  }else{
+                      console.log("Message sent: " + response.message);
+                  }
+
+                  smtpTransport.close(); // shut down the connection pool, no more messages.  Comment this line out to continue sending emails.
+              });
               var data = new Users();
               data.meno = req.body['meno'];
               data.priezvisko = req.body['priezvisko'];
@@ -198,7 +199,7 @@ router.post('/registration',function(req, res) // Spracovanie registracie
                   if (!err) {
                       console.log("Saved");
                      // res.write("<script>alert('Registraciu dokoncite potvrdenim verifikacneho e-mailu!');window.location='/';</script>");
-                    res.end("DDSDS");
+
                       res.redirect("/");
 
                   }
