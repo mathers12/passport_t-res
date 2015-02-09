@@ -54,7 +54,7 @@ function randomValueHex (len) {
 function getUniqueRandomId() { // Kontrola na jedinecne ID verify email
 
             var randomId = randomValueHex(20);
-            mongoose.model('uzivatelia').find({emailId: randomId}, function (err, user) {
+            mongoose.model('users').find({emailId: randomId}, function (err, user) {
             if (user.length) {
                 console.log("je to tam, musim generovat");
                 getUniqueRandomId();
@@ -82,7 +82,7 @@ passport.deserializeUser(function(user,done)
 /* ---------------------PASSPORT LOCAL--------------------------*/
 passport.use(new passportLocal.Strategy({usernameField: "email", passwordField: "password"},function(email,password,done)
 {
-    mongoose.model('uzivatelia').find({email: email, heslo: password },function(err,user)
+    mongoose.model('users').find({email: email, heslo: password },function(err,user)
     {
     console.log("V PASSPORT LOCAL");
         if (user.length) // Ak je prihlasenie uspesne
@@ -136,9 +136,9 @@ router.get('/verify',function(req,res)
 {
 
     //mongoose.model('uzivatelia').find({emailId: req.query.id},function(err,users)
-    mongoose.model('uzivatelia').findById(req.query.id, function(err, user)
+    mongoose.model('users').findById(req.query.id,{}, function(err, user)
     {
-        if (user.length)
+        if (user)
         {
             user.verifiedEmail = true;
             user.save();
@@ -153,7 +153,7 @@ router.get('/verify',function(req,res)
 router.post('/registration',function(req, res) // Spracovanie registracie
 {
 
-    mongoose.model('uzivatelia').find({email: req.body['email']}, function(err, users)
+    mongoose.model('users').find({email: req.body['email']}, function(err, users)
    {
 
       if (users.length)//Ak uz je v DB
@@ -172,7 +172,7 @@ router.post('/registration',function(req, res) // Spracovanie registracie
               //var link="http://"+req.get('host')+"/verify?id="+rand;
 
               //sendEmail(req.body['email'],link,req.body['meno'],req.body['priezvisko']); // Volanie funkcie na posielanie ver. emailu
-              var AddUserSchema = mongoose.model('uzivatelia');
+              var AddUserSchema = mongoose.model('users');
               var addUser = new AddUserSchema({
                     meno: req.body['meno'],
                     priezvisko: req.body['priezvisko'],
