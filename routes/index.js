@@ -142,7 +142,8 @@ router.get('/verify',function(req,res)
         {
             user.verifiedEmail = true;
             user.save();
-            res.write("<script>alert('Verifikacia prebehla uspesne,mozete sa prihlasit!');window.location='/'</script>");
+            //res.write("<script>alert('Verifikacia prebehla uspesne,mozete sa prihlasit!');window.location='/'</script>");
+            res.redirect('/');
         }
         else res.send(404);
     });
