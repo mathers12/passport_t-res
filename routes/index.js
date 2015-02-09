@@ -112,18 +112,6 @@ passport.use(new passportHttp.BasicStrategy(function(username,password,done)
 
 }));
 
-/* ---------------------MONGOOSE --------------------------*/
-var schema = mongoose.Schema({ // Schema tabulky
-    meno: String,
-    priezvisko: String,
-    email: String,
-    heslo: String,
-    emailId: String,
-    verifiedEmail: Boolean
-});
-
-var Users = mongoose.model('uzivatelia',schema,"uzivatelia"); // DB Schema
-
 
 
 /* ---------------------ROUTES --------------------------*/
