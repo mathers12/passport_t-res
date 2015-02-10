@@ -11,7 +11,7 @@ var passport = require('passport');
 var app = express();
 var partials = require('express-partials');
 var fs = require('fs');
-
+var auth = require("./auth/lib/auth");
 //NODEMAILER
 
 
@@ -29,6 +29,8 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+//app.use(express.static(path.join(__dirname, 'auth/images')));
+
 app.use(partials());
 app.use(expressSession({
 
@@ -44,8 +46,6 @@ fs.readdirSync(__dirname + '/models').forEach(function (filename) {
 });
 
 app.use('/', routes);
-
-
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

@@ -5,17 +5,19 @@ var passport = require('passport');
 var passportLocal = require('passport-local');
 var nodemailer = require('nodemailer');
 var bcrypt = require("bcrypt");
+var params = require('./params.js');
+
 router.use(passport.initialize());
 router.use(passport.session());
 
-
+console.log(params.SMTP.user);
 
 /* ---------------------NODEMAILER--------------------------*/
 var smtpTransport = nodemailer.createTransport("SMTP",{
     service: "Gmail",
     auth: {
-        user: "info@publishart.eu",
-        pass: "publishart@2714info2517"
+        user: params.SMTP.user,
+        pass: params.SMTP.pass
     }
 });
 
@@ -34,16 +36,34 @@ function saveToDB(meno,priezvisko,email,heslo,req,res)
         verifiedEmail: false
     });
 
+
     addUser.save(function (err, data) {
         if (!err) {
             var link = "http://" + req.get('host') + "/verify?id=" + data._id;
-            sendEmail(req.body['email'], link, req.body['meno'], req.body['priezvisko']); // Volanie funkcie na posielanie ver. emailu
-            console.log("Saved");
 
-            res.redirect("/");
+            var htmlData = {
+                link: link,
+                htmlBody: params.email.html,
+                meno: req.body['meno'],
+                priezvisko: req.body['priezvisko'],
+                footer: params.email.footer
+            };
+
+            //RENDEROVANIE
+            res.render('registrationApproving',htmlData,function(err,html)
+            {
+                sendEmail(req.body['email'],html); // Volanie funkcie na posielanie ver. emailu
+
+                res.redirect("/");
+
+
+            });
+
+
         }
     });
 }
+
 function comparePassword(password,hash,verifiedEmail,meno,priezvisko,email,done)
 {
     bcrypt.compare(password, hash, function (err, res) {
@@ -65,14 +85,29 @@ function comparePassword(password,hash,verifiedEmail,meno,priezvisko,email,done)
     });
 
 }
-function sendEmail (email,link,meno,priezvisko)
+function sendEmail (email,html)
 {
 
     smtpTransport.sendMail({  //email options
-        from: "info@publishart.eu",
+        from: params.email.from,
         to: email,
-        subject: "Prosím, potvrďte tento e-mail!",
-        html: "Dobrý deň pán <b>"+meno+" "+priezvisko+"</b><br><br>Prosím potvrďte tento verifikačný e-mail!<br><a href="+link+">Potvrdiť kliknutím tu!</a>"
+        subject: params.email.subject,
+        html: html,
+        attachments:[
+
+            {
+                fileName: "top-shadow-right.gif",
+                cid: "top-shadow-right",
+                filePath: "images/top-shadow-right.gif"
+            },
+            {
+
+                fileName: "footer-shadow.gif",
+                cid: "footer-shadow",
+                filePath: "images/footer-shadow.gif"
+
+            }
+        ]
 
     }, function(error, response){  //callback
         if(error){
@@ -119,16 +154,16 @@ passport.use(new passportLocal.Strategy({usernameField: "email", passwordField: 
 router.get('/',function(req,res) // Prihlasenie
 {
     console.log(req.user);
-   res.render('index',{
-       authenticated: req.isAuthenticated(),
-       user: req.user
-   });
+    res.render('index',{
+        authenticated: req.isAuthenticated(),
+        user: req.user
+    });
 });
 
 /* ---------------------GET-REGISTRATION--------------------------*/
 router.get('/registration',function(req,res) // Registracia
 {
-   res.render('registration');
+    res.render('registration');
 });
 
 /* ---------------------GET-VERIFY-EMAIL--------------------------*/
@@ -154,32 +189,32 @@ router.post('/registration',function(req, res) // Spracovanie registracie
 {
 
     mongoose.model('users').find({email: req.body['email']}, function(err, users)
-   {
+    {
 
-      if (users.length)//Ak uz je v DB
-      {
-          console.log("E-mail uz je v DB");
-      }
+        if (users.length)//Ak uz je v DB
+        {
+            console.log("E-mail uz je v DB");
+        }
 
-      else {
+        else {
 
-             if (req.body['heslo'] === req.body['heslo2']) // Skontrolujem zhodu hesiel a ukladam do DB
-                {
-                      //HASH PASSWORD
-                      bcrypt.genSalt(10, function(err, salt) {
-                      bcrypt.hash(req.body['heslo'], salt, function(err, hash) {
+            if (req.body['heslo'] === req.body['heslo2']) // Skontrolujem zhodu hesiel a ukladam do DB
+            {
+                //HASH PASSWORD
+                bcrypt.genSalt(10, function(err, salt) {
+                    bcrypt.hash(req.body['heslo'], salt, function(err, hash) {
 
-                          saveToDB(req.body['meno'],req.body['priezvisko'],req.body['email'],hash,req,res);
-                          });
-                      });
-              }
-             else
-                 console.log("hesla sa nezhoduju!");
-           }
+                        saveToDB(req.body['meno'],req.body['priezvisko'],req.body['email'],hash,req,res);
+                    });
+                });
+            }
+            else
+                console.log("hesla sa nezhoduju!");
+        }
 
 
 
-   });
+    });
 
 });
 
