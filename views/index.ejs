@@ -12,9 +12,9 @@
 
   <% if (authenticated){%>
   <p>Vitame Vas pan, <%= user.meno+" "+user.priezvisko%></p>
-  <a href="/logout">Odhlasit sa!</a>
+  <a href="/auth/logout">Odhlasit sa!</a>
   <%}else{%>
-  <form action="" name="login" method="post">
+  <form action="/auth/" name="login" method="post">
       <table>
         <td>E-mail</td>
               <td><input type="email" name="email" required></td>
@@ -29,7 +29,7 @@
           </tr>
       </table>
   </form>
-<p>Ešte nemáte účet vytvorený? <a href="/registration">Zaregistrujte sa</a></p>
+<p>Ešte nemáte účet vytvorený? <a href="/auth/registration">Zaregistrujte sa</a></p>
 <%}%>
   </body>
 </html>

@@ -23,26 +23,30 @@ var smtpTransport = nodemailer.createTransport("SMTP",{
 
 /* ---------------------FUNCTIONS--------------------------*/
 
-function saveToDB(meno,priezvisko,email,heslo,req,res)
+function saveToDB(req,res)
 {
 
     var AddUserSchema = mongoose.model('users');
     var addUser = new AddUserSchema({
-        meno: meno,
-        priezvisko: priezvisko,
-        email: email,
-        heslo: heslo,
+        meno: req.body['meno'],
+        priezvisko: req.body['priezvisko'],
+        email: req.body['email'],
+        heslo: req.body['heslo'],
         verifiedEmail: false
     });
 
 
     addUser.save(function (err, data) {
         if (!err) {
-            var link = "http://" + req.get('host') + "/verify?id=" + data._id;
+            var link = "http://" + req.get('host') + "/auth/verify?id=" + data._id;
 
             var htmlData = {
                 link: link,
-                //htmlBody: params.email.html,
+                title: params.email.html.title,
+                htmlAddress: req.body['meno']+" "+req.body['priezvisko'],
+                message: params.email.html.message,
+                subject: params.email.html.subject,
+                button: params.email.html.button,
                 meno: req.body['meno'],
                 priezvisko: req.body['priezvisko'],
                 footer: params.email.footer
@@ -95,13 +99,13 @@ function sendEmail (email,html)
             {
                 fileName: "top-shadow-right.gif",
                 cid: "top-shadow-right",
-                filePath: "images/top-shadow-right.gif"
+                filePath: "auth/images/top-shadow-right.gif"
             },
             {
 
                 fileName: "footer-shadow.gif",
                 cid: "footer-shadow",
-                filePath: "images/footer-shadow.gif"
+                filePath: "auth/images/footer-shadow.gif"
 
             }
         ]
@@ -200,8 +204,8 @@ router.post('/registration',function(req, res) // Spracovanie registracie
                 //HASH PASSWORD
                 bcrypt.genSalt(10, function(err, salt) {
                     bcrypt.hash(req.body['heslo'], salt, function(err, hash) {
-
-                        saveToDB(req.body['meno'],req.body['priezvisko'],req.body['email'],hash,req,res);
+                        req.body['heslo'] = req.body['heslo2'] = hash;
+                        saveToDB(req,res);
                     });
                 });
             }
@@ -220,7 +224,8 @@ router.get('/logout',function(req,res)
 {
     req.logout();
     res.redirect("/");
-})
+});
+
 /* ---------------------POST-LOGIN--------------------------*/
 router.post('/',passport.authenticate("local"),function(req,res)
 {

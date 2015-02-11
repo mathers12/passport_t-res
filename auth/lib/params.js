@@ -8,17 +8,18 @@ module.exports =
     SMTP:
     {
         user: "info@publishart.eu",
-            pass: "publishart@2714info2517"
+        pass: "publishart@2714info2517"
     },
     email:
     {
-        from: "info@publishart.eu",
+        from: "Live My Way Ltd. <info@publishart.eu>",
         subject: "Verifikacia e-mailu",
         footer: "dSoft Solutions s.r.o",
-        html: function(meno,priezvisko,link)
-        {
-            return "Dobrý deň pán <b>"+meno+" "+priezvisko+"</b><br><br>Prosím potvrďte tento verifikačný e-mail!<br><button><a href='"+link+"'>Potvrdiť kliknutím tu!</a></button>";
-
+        html: {
+            title: "Dobrý deň pán/pani",
+            message: "Prosím potvrďte tento",
+            subject: "verifikačný e-mail",
+            button: "Potvrdiť kliknutím tu!"
         }
     },
     register:
