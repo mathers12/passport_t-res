@@ -5,25 +5,25 @@ var passport = require('passport');
 var passportLocal = require('passport-local');
 var nodemailer = require('nodemailer');
 var bcrypt = require("bcrypt");
+var params = require('../auth/lib/params.js');
+var $ = require('jquery')(require("jsdom").jsdom().parentWindow);
 router.use(passport.initialize());
 router.use(passport.session());
-
 
 
 /* ---------------------NODEMAILER--------------------------*/
 var smtpTransport = nodemailer.createTransport("SMTP",{
     service: "Gmail",
     auth: {
-        user: "info@publishart.eu",
-        pass: "publishart@2714info2517"
+        user: params.SMTP.user,
+        pass: params.SMTP.pass
     }
 });
 
 
 /* ---------------------FUNCTIONS--------------------------*/
 
-function saveToDB(meno,priezvisko,email,heslo,req,res)
-{
+function saveToDB(meno,priezvisko,email,heslo,req,res) {
 
     var AddUserSchema = mongoose.model('users');
     var addUser = new AddUserSchema({
@@ -37,13 +37,32 @@ function saveToDB(meno,priezvisko,email,heslo,req,res)
     addUser.save(function (err, data) {
         if (!err) {
             var link = "http://" + req.get('host') + "/verify?id=" + data._id;
-            sendEmail(req.body['email'], link, req.body['meno'], req.body['priezvisko']); // Volanie funkcie na posielanie ver. emailu
-            console.log("Saved");
 
-            res.redirect("/");
+            var htmlData = {
+                footer: params.email.footer,
+                htmlBody: params.email.html(req.body['meno'],req.body['priezvisko'],link)
+            };
+
+
+            //RENDEROVANIE
+            res.render('registrationApproving',htmlData, function (err, html) {
+
+
+                var decoded = $('<div/>').html(html).text();
+
+                console.log(decoded);
+                sendEmail(req.body['email'], decoded); // Volanie funkcie na posielanie ver. emailu
+                res.redirect("/");
+
+
+            });
+
+
         }
+
     });
 }
+
 function comparePassword(password,hash,verifiedEmail,meno,priezvisko,email,done)
 {
     bcrypt.compare(password, hash, function (err, res) {
@@ -65,14 +84,29 @@ function comparePassword(password,hash,verifiedEmail,meno,priezvisko,email,done)
     });
 
 }
-function sendEmail (email,link,meno,priezvisko)
+function sendEmail (email,html)
 {
 
     smtpTransport.sendMail({  //email options
-        from: "info@publishart.eu",
+        from: params.email.from,
         to: email,
-        subject: "Prosím, potvrďte tento e-mail!",
-        html: "Dobrý deň pán <b>"+meno+" "+priezvisko+"</b><br><br>Prosím potvrďte tento verifikačný e-mail!<br><a href="+link+">Potvrdiť kliknutím tu!</a>"
+        subject: params.email.subject,
+        html: html,
+        attachments:[
+
+            {
+                fileName: "top-shadow-right.gif",
+                cid: "top-shadow-right",
+                filePath: "auth/images/top-shadow-right.gif"
+            },
+            {
+
+                fileName: "footer-shadow.gif",
+                cid: "footer-shadow",
+                filePath: "auth/images/footer-shadow.gif"
+
+            }
+        ]
 
     }, function(error, response){  //callback
         if(error){

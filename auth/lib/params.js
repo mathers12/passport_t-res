@@ -15,7 +15,11 @@ module.exports =
         from: "info@publishart.eu",
         subject: "Verifikacia e-mailu",
         footer: "dSoft Solutions s.r.o",
-        html: "Dobrý deň pán <b><%= meno %> <%=priezvisko %></b><br><br>Prosím potvrďte tento verifikačný e-mail!<br><button><a href='<%= link %>'>Potvrdiť kliknutím tu!</a></button>"
+        html: function(meno,priezvisko,link)
+        {
+            return "Dobrý deň pán <b>"+meno+" "+priezvisko+"</b><br><br>Prosím potvrďte tento verifikačný e-mail!<br><button><a href='"+link+"'>Potvrdiť kliknutím tu!</a></button>";
+
+        }
     },
     register:
     {

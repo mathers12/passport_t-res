@@ -10,7 +10,6 @@ var params = require('./params.js');
 router.use(passport.initialize());
 router.use(passport.session());
 
-console.log(params.SMTP.user);
 
 /* ---------------------NODEMAILER--------------------------*/
 var smtpTransport = nodemailer.createTransport("SMTP",{
@@ -43,7 +42,7 @@ function saveToDB(meno,priezvisko,email,heslo,req,res)
 
             var htmlData = {
                 link: link,
-                htmlBody: params.email.html,
+                //htmlBody: params.email.html,
                 meno: req.body['meno'],
                 priezvisko: req.body['priezvisko'],
                 footer: params.email.footer
@@ -55,8 +54,6 @@ function saveToDB(meno,priezvisko,email,heslo,req,res)
                 sendEmail(req.body['email'],html); // Volanie funkcie na posielanie ver. emailu
 
                 res.redirect("/");
-
-
             });
 
 
