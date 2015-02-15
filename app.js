@@ -12,7 +12,25 @@ var app = express();
 var partials = require('express-partials');
 var fs = require('fs');
 var auth = require("./auth/lib/auth");
-//NODEMAILER
+var routes = require('./routes')
+
+var test = require('./routes/test');
+
+
+var user = require('./routes/user');
+var users = require('./routes/users');
+var profiles = require('./routes/profiles');
+var address = require('./routes/address');
+var userTypes = require('./routes/user-types');
+
+var rooms = require('./routes/rooms');
+var parts = require('./routes/parts');
+var tables = require('./routes/tables');
+var seats = require('./routes/seats');
+var states = require('./routes/states');
+var google_doc = require('./routes/google_doc');
+//var main = require('./routes/main');
+
 
 
 //Mongoose (MongoDB)
@@ -21,7 +39,6 @@ mongoose.connect('mongodb://127.0.0.1:27017/db');
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
-
 // uncomment after placing your favicon in /public
 //app.use(favicon(__dirname + '/public/favicon.ico'));
 app.use(logger('dev'));
@@ -39,6 +56,7 @@ app.use(expressSession({
     saveUninitialized: false
 }));
 
+app.use(express.static(path.join(__dirname, 'public/build')));
 
 // load all mongoose models from models folder
 fs.readdirSync(__dirname + '/models').forEach(function (filename) {
@@ -47,7 +65,24 @@ fs.readdirSync(__dirname + '/models').forEach(function (filename) {
 
 app.use('/', routes);
 app.use('/auth', auth);
+app.use('/api/user', user);
+app.use('/api/users', users);
+app.use('/api/user-types', userTypes);
+app.use('/api/profiles', profiles);
+app.use('/api/address', address);
 
+app.use('/api/rooms', rooms);
+app.use('/api/parts', parts);
+app.use('/api/tables', tables);
+app.use('/api/seats', seats);
+app.use('/api/states', states);
+app.use('/api/test', test);
+app.use('/google-doc', google_doc);
+
+//app.use('/main', main);
+app.use('/*', function(req, res){
+    res.sendfile(__dirname + '/public/build/index.html');
+});
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
     var err = new Error('Not Found');

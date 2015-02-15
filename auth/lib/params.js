@@ -16,7 +16,8 @@ module.exports =
         subject: "Verifikacia e-mailu",
         footer: "dSoft Solutions s.r.o",
         html: {
-            title: "Dobrý deň pán/pani",
+            titleMale: "Dobrý deň pán",
+            titleFemale: "Dobrý deň pani",
             message: "Prosím potvrďte tento",
             subject: "verifikačný e-mail",
             button: "Potvrdiť kliknutím tu!"

@@ -1,0 +1,48 @@
+<style>
+    body
+    {
+        background-color: black;
+    }
+    input{
+        color:black;
+    }
+</style>
+<h3>Registration </h3>
+<form action="/auth/registration" method="post" >
+    <table>
+        <tr>
+            <td><label>Meno:</label></td>
+            <td><input type="text" name="meno" ng-model="user.userName" required style="width: 200px;"/></td>
+        </tr>
+        <tr>
+            <td><label>Priezvisko:</label></td>
+            <td><input type="text" name="priezvisko" ng-model="user.lastName" required style="width: 200px;"/></td>
+        </tr>
+        <tr>
+            <td><label>E-mail:</label></td>
+            <td><input type="email" name="email" ng-model="user.email" required style="width: 200px;"/></td>
+        </tr>
+        <tr>
+            <td><label>Heslo:</label></td>
+            <td><input type="password" name="heslo" ng-model="user.password1" required style="width: 200px;"/></td>
+        </tr>
+        <tr>
+            <td><label>Potvrdenie hesla:</label></td>
+            <td><input type="password" name="heslo2" ng-model="user.password2" required style="width: 200px;"/></td>
+        </tr>
+        <tr>
+            <td><label>Dátum narodenia</label></td>
+            <td><input type="date" name="datum" ng-model="user.date" required style="width: 200px;"/></td>
+        </tr>
+        <tr>
+            <td><label>Pohlavie</label></td>
+            <td>
+                <label>Muž</label><input type="radio" name="pohlavie" value="male"/>
+                <label>Žena</label><input type="radio" name="pohlavie" value="female"/>
+            </td>
+        </tr>
+        <tr>
+            <td><input type="submit" value="Registrovat sa"></td>
+        </tr>
+    </table>
+</form>

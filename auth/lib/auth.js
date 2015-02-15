@@ -25,15 +25,19 @@ var smtpTransport = nodemailer.createTransport("SMTP",{
 
 function saveToDB(req,res)
 {
-
-    var AddUserSchema = mongoose.model('users');
-    var addUser = new AddUserSchema({
-        meno: req.body['meno'],
-        priezvisko: req.body['priezvisko'],
-        email: req.body['email'],
-        heslo: req.body['heslo'],
-        verifiedEmail: false
-    });
+console.log(req.body['datum']);
+    var addUserSchema = mongoose.model('clients');
+    var addUser = new addUserSchema(
+        {
+            firstName: req.body['meno'],
+            lastName: req.body['priezvisko'],
+            password: req.body['heslo'],
+            email: req.body['email'],
+            verifiedEmail: false,
+            date_of_birth: req.body['datum'],
+            sex: req.body['pohlavie']
+        }
+    );
 
 
     addUser.save(function (err, data) {
@@ -42,7 +46,9 @@ function saveToDB(req,res)
 
             var htmlData = {
                 link: link,
-                title: params.email.html.title,
+                titleMale: params.email.html.titleMale,
+                titleFemale: params.email.html.titleFemale,
+                sex: req.body['pohlavie'],
                 htmlAddress: req.body['meno']+" "+req.body['priezvisko'],
                 message: params.email.html.message,
                 subject: params.email.html.subject,
@@ -74,7 +80,7 @@ function comparePassword(password,hash,verifiedEmail,meno,priezvisko,email,done)
             {
 
                 console.log("Tu sme");
-                done(null,{email: email, meno: meno, priezvisko: priezvisko});
+                done(null,{email: email, firstName: meno, lastName: priezvisko});
 
             }
             else // Verifikacia este neprebehla
@@ -82,6 +88,10 @@ function comparePassword(password,hash,verifiedEmail,meno,priezvisko,email,done)
                 console.log("NEVERIFIKOVANE");
                 done(null,false);
             }
+        }
+        else
+        {
+            done(null,false);
         }
     });
 
@@ -135,12 +145,15 @@ passport.deserializeUser(function(user,done)
 /* ---------------------PASSPORT LOCAL--------------------------*/
 passport.use(new passportLocal.Strategy({usernameField: "email", passwordField: "password"},function(email,password,done)
 {
-    mongoose.model('users').find({email: email},function(err,user)
+    console.log("In local");
+    mongoose.model('clients').find({email: email},function(err,user)
     {
 
         if (user.length) // Ak je v DB dany uzivatel
         {
-            comparePassword(password,user[0].heslo,user[0].verifiedEmail,user[0].meno,user[0].priezvisko,email,done);
+            console.log("JE V DB");
+            console.log(user);
+            comparePassword(password,user[0].password,user[0].verifiedEmail,user[0].firstName,user[0].lastName,email,done);
         }
         else // Ak je neplatne meno a heslo
         {
@@ -170,9 +183,9 @@ router.get('/registration',function(req,res) // Registracia
 /* ---------------------GET-VERIFY-EMAIL--------------------------*/
 router.get('/verify',function(req,res)
 {
-
+    console.log("Verify");
     //mongoose.model('uzivatelia').find({emailId: req.query.id},function(err,users)
-    mongoose.model('users').findById(req.query.id,{}, function(err, user)
+    mongoose.model('clients').findById(req.query.id,{}, function(err, user)
     {
         if (user)
         {
@@ -189,7 +202,7 @@ router.get('/verify',function(req,res)
 router.post('/registration',function(req, res) // Spracovanie registracie
 {
 
-    mongoose.model('users').find({email: req.body['email']}, function(err, users)
+    mongoose.model('clients').find({email: req.body['email']}, function(err, users)
     {
 
         if (users.length)//Ak uz je v DB
@@ -229,8 +242,9 @@ router.get('/logout',function(req,res)
 /* ---------------------POST-LOGIN--------------------------*/
 router.post('/',passport.authenticate("local"),function(req,res)
 {
-    res.redirect('/');
+    res.redirect('/login');
 });
 
 
 module.exports = router;
+
