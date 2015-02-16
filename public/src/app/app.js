@@ -1,6 +1,9 @@
 (function(app) {
 
+
     app.config(function ($stateProvider, $urlRouterProvider, $locationProvider) {
+
+
         $urlRouterProvider.otherwise('/home');
         $locationProvider.html5Mode({
             enabled: true,

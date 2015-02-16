@@ -1,6 +1,7 @@
 (function(app) {
 
     app.config(function ($stateProvider) {
+
         $stateProvider.state('login', {
             url: '/login',
             views: {
@@ -32,7 +33,7 @@
 
     app.controller('LoginController', ["$scope", "$firebase",
 
-    function($scope, $firebase) {
+    function($scope) {
 
         $scope.Login = function(user) {
 
@@ -56,5 +57,6 @@
 
 }(angular.module("T-Res-App.login", [
     'firebase',
-    'ui.router'
+    'ui.router',
+
 ])));

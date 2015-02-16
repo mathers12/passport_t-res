@@ -1,19 +1,54 @@
 (function(app) {
 
     app.config(function ($stateProvider) {
+
+        var checkLogin = function ($q, $http, $window) {
+            // vytvorime instanciu sluzby q
+            var deferred = $q.defer();
+
+
+            // Testujeme, ci je uzivatel prihlaseny
+            $http.get('/auth/loggedin').success(function (user) {
+                // Prihlaseny
+                if (user !== '0') {
+                    deferred.resolve(); // vratime uspesne vykonanie resolve
+                }
+                // Neprihlaseny
+                else {
+                    deferred.reject(); // vratime neuspesne vykonanie resolve
+                    //$location.path('/login') //Nefunguje, I have no idea
+
+                    /*Redirect na stranku prihlasovania*/
+                    $window.location.assign('/login');
+                }
+            });
+
+            return deferred.promise;
+        };
+
+
+
+
         $stateProvider.state('profiles', {
             url: '/profiles',
             views: {
                 "main": {
                     controller: 'ProfilesController',
                     templateUrl: 'profiles/profiles.tpl.html'
+
                 }
+            },
+            resolve:{
+              loggedIn: checkLogin
             },
             data:{ pageTitle: 'Profiles' }
         });
+
+
     });
 
     app.controller('ProfilesController', function ($scope, $resource) {
+
 
         var init = function() {
             // A definitive place to put everything that needs to run when the controller starts. Avoid

@@ -239,9 +239,17 @@ router.get('/logout',function(req,res)
     res.redirect("/");
 });
 
+/*-------------------LOGGED IN----------------------------*/
+router.get('/loggedin', function(req, res) {
+
+    res.send(req.isAuthenticated() ? req.user : '0');
+});
+
+
 /* ---------------------POST-LOGIN--------------------------*/
 router.post('/',passport.authenticate("local"),function(req,res)
 {
+    //res.send(req.user);
     res.redirect('/login');
 });
 
