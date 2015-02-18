@@ -231,23 +231,14 @@ angular.module("home/home.tpl.html", []).run(["$templateCache", function($templa
 
 angular.module("login/login.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("login/login.tpl.html",
-    "<style>\n" +
-    "    body\n" +
-    "    {\n" +
-    "        background-color: black;\n" +
-    "    }\n" +
-    "    input{\n" +
-    "        color:black;\n" +
-    "    }\n" +
-    "</style>\n" +
     "<h3>Login </h3>\n" +
     "<label>Email:</label>\n" +
-    "<form action=\"/auth/\" method=\"post\" ng-submit=\"Login(user)\">\n" +
+    "<form ng-submit=\"Login()\">\n" +
     "    <!-- this input field synchronizes directly to the name attribute in Firebase! -->\n" +
     "    <input type=\"email\" name=\"email\" ng-model=\"user.email\" />\n" +
     "    <label>Password:</label>\n" +
     "    <input type=\"password\" name=\"password\" ng-model=\"user.password\" />\n" +
-    "    <input class=\"btn btn-alert\" type=\"submit\">Sing in</input>\n" +
+    "    <input class=\"btn btn-alert\" type=\"submit\" >Sing in</input>\n" +
     "</form>");
 }]);
 
@@ -387,15 +378,6 @@ angular.module("profiles/profiles.tpl.html", []).run(["$templateCache", function
 
 angular.module("register/register.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("register/register.tpl.html",
-    "<style>\n" +
-    "    body\n" +
-    "    {\n" +
-    "        background-color: black;\n" +
-    "    }\n" +
-    "    input{\n" +
-    "        color:black;\n" +
-    "    }\n" +
-    "</style>\n" +
     "<h3>Registration </h3>\n" +
     "<form action=\"/auth/registration\" method=\"post\" >\n" +
     "    <table>\n" +

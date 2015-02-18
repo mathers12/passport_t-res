@@ -13,14 +13,16 @@
         });
     });
 
-    app.factory("Profile", ["$firebase", function($firebase) {
-        return function(username) {
+    app.factory("Profile", function() {
+/*        return function(username) {
             // create a reference to the user's profile
             var ref = new Firebase("https://blazing-fire-175.firebaseio.com/profiles/").child(username);
             // return it as a synchronized object
             return $firebase(ref).$asObject();
-        };
-    }]);
+
+        };*/
+        return "Nieco";
+    });
 
     app.controller('ProfileController', ["$scope", "Profile",
 

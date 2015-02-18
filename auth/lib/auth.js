@@ -80,6 +80,7 @@ function comparePassword(password,hash,verifiedEmail,meno,priezvisko,email,done)
             {
 
                 console.log("Tu sme");
+                console.log(meno);
                 done(null,{email: email, firstName: meno, lastName: priezvisko});
 
             }
@@ -146,6 +147,8 @@ passport.deserializeUser(function(user,done)
 passport.use(new passportLocal.Strategy({usernameField: "email", passwordField: "password"},function(email,password,done)
 {
     console.log("In local");
+
+
     mongoose.model('clients').find({email: email},function(err,user)
     {
 
@@ -246,11 +249,13 @@ router.get('/loggedin', function(req, res) {
 });
 
 
+
 /* ---------------------POST-LOGIN--------------------------*/
 router.post('/',passport.authenticate("local"),function(req,res)
 {
+
     //res.send(req.user);
-    res.redirect('/login');
+     res.redirect(req.body['link']);
 });
 
 

@@ -90,7 +90,8 @@ module.exports = function(grunt) {
                 'vendor/angular-material/angular-material.js'
             ],
             css: [
-                'assets/angular-material.css'
+                'assets/css/angular-material.css',
+
             ],
             assets: [
             ]

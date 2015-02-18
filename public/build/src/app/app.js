@@ -1,6 +1,8 @@
 (function(app) {
 
 
+
+
     app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', function ($stateProvider, $urlRouterProvider, $locationProvider) {
 
 
@@ -11,7 +13,9 @@
         });
     }]);
 
-    app.controller('AppController', ['$scope', '$mdDialog', '$mdToast', '$location', function ($scope, $mdDialog, $mdToast, $location) {
+    app.controller('AppController', ['$scope', '$mdDialog', '$mdToast', '$location', function ($scope,$mdDialog, $mdToast, $location) {
+
+
         var tabs = [
             { title: 'Miestnosti', route: "rooms", order: 0, content: ""},
             { title: 'Časti v miestnotiach', route: "parts", order: 1, content: ""},

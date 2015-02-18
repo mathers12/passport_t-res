@@ -2,11 +2,9 @@
 
     app.config(['$stateProvider', function ($stateProvider) {
 
-        var checkLogin = ['$q', '$http', '$window', function ($q, $http, $window) {
+        var checkLogin = ['$q', '$http', '$window', '$location', function ($q, $http,$window,$location) {
             // vytvorime instanciu sluzby q
             var deferred = $q.defer();
-
-
             // Testujeme, ci je uzivatel prihlaseny
             $http.get('/auth/loggedin').success(function (user) {
                 // Prihlaseny
@@ -15,11 +13,13 @@
                 }
                 // Neprihlaseny
                 else {
+
                     deferred.reject(); // vratime neuspesne vykonanie resolve
                     //$location.path('/login') //Nefunguje, I have no idea
 
+
                     /*Redirect na stranku prihlasovania*/
-                    $window.location.assign('/login');
+                    $window.location.assign('/login?from='+$location.url());
                 }
             });
 
@@ -39,15 +39,18 @@
                 }
             },
             resolve:{
-              loggedIn: checkLogin
+              isLogged: checkLogin
             },
+
+
             data:{ pageTitle: 'Profiles' }
         });
 
 
     }]);
 
-    app.controller('ProfilesController', ['$scope', '$resource', function ($scope, $resource) {
+    app.controller('ProfilesController', ['$scope', '$state', '$resource', function ($scope,$state, $resource) {
+
 
 
         var init = function() {
@@ -120,6 +123,7 @@
         };
 
         init();
+        console.log("fdf");
     }]);
 
 }(angular.module("T-Res-App.profiles", [
